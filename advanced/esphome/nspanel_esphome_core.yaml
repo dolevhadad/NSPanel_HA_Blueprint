@@ -9,6 +9,13 @@ substitutions:
   ##### DON'T CHANGE THIS #####
   version: "4.1.4"
   #############################
+  device_name: "nspanel" 
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  ota_password: "652f8deb1ef5ffd95a92acd27b8042f9"
+  nextion_update_url: !secret nspanel_eu_url
+  nextion_blank_url: !secret nspanel_blank_url
+  api_encryption_key: "hzUABO2WYhKUg2OWAzuwywbKzjjKQtVwSW06qc7x8SA="
 
 #external_components:
 #  - source: github://pr#5825 # Remove this when that pr is merged and released
@@ -18,6 +25,7 @@ substitutions:
 ##### ESPHOME CONFIGURATION #####
 esphome:
   name: ${device_name}
+  friendly_name: ${device_name}
   min_version: 2023.5.0
   platformio_options:
     build_flags:
@@ -80,6 +88,8 @@ esphome:
 ##### TYPE OF ESP BOARD #####
 esp32:
   board: esp32dev
+  framework:
+    type: esp-idf
 
 ##### WIFI SETUP #####
 wifi:
@@ -94,7 +104,7 @@ wifi:
 ##### OTA PASSWORD #####
 ota:
   id: ota_std
-  password: ${wifi_password}
+  password: ${ota_password}
   safe_mode: true
   reboot_timeout: 3min
   num_attempts: 3
@@ -146,6 +156,8 @@ time:
 api:
   id: api_server
   reboot_timeout: 0s
+  encryption:
+    key: "${api_encryption_key}"
   services:
       ##### Service to send a command "printf" directly to the display #####
       - service: send_command_printf
